@@ -10,11 +10,11 @@ At the final layer, GPT-2 converts its internal representation to predictions:
 logits = LayerNorm(residual_stream) @ W_U
 ```
 
-The **logit lens** applies this same operation to *intermediate* layers. Why does this make sense?
+The **logit lens** applies this same operation to _intermediate_ layers. Why does this make sense?
 
 ### Why Residual Streams Make This Work
 
-Transformers use residual connections. Each layer *adds* to the stream rather than replacing it:
+Transformers use residual connections. Each layer _adds_ to the stream rather than replacing it:
 
 ```
 residual_after = residual_before + layer_output
@@ -54,6 +54,7 @@ streamlit run app.py
 ```
 
 Features:
+
 - Type any prompt and see layer-by-layer predictions
 - Heatmap of confidence across layers
 - Track specific token probability evolution
@@ -64,10 +65,12 @@ Features:
 ### The Three Key Components
 
 1. **Residual Stream** (`hook_resid_post`)
+
    - The main highway of information flow
    - Shape: `(batch, seq_len, d_model)` = `(1, n_tokens, 768)` for GPT-2 Small
 
 2. **Unembedding Matrix** (`model.W_U`)
+
    - Converts hidden states to vocabulary logits
    - Shape: `(d_model, vocab_size)` = `(768, 50257)` for GPT-2 Small
 
@@ -114,31 +117,6 @@ python logit_lens.py
 # Run interactive app
 streamlit run app.py
 ```
-
-## Key Concepts for Interview Prep
-
-### Q: What is the logit lens?
-
-**A**: A technique that applies the model's final unembedding operation to intermediate layer representations. This reveals what the model would predict if we stopped computation at that layer. It works because residual connections mean information accumulates gradually, so each layer has a "partial answer" that we can decode.
-
-### Q: Why do we apply LayerNorm?
-
-**A**: GPT-2's architecture applies LayerNorm before the unembedding matrix. The model learned its unembedding weights expecting normalized inputs. Skipping LayerNorm would give us unscaled, meaningless logits. This is architecture-specific. Some models (like LLaMA) use RMSNorm, others have different conventions.
-
-### Q: What does it mean if a prediction appears early?
-
-**A**: The relevant information is easily extractable from the embeddings and early attention patterns. For "The Eiffel Tower is in", the association between "Eiffel Tower" and "Paris" is likely stored in the embedding space or learned in early layers.
-
-### Q: What does it mean if a prediction changes late?
-
-**A**: Later layers are doing something more than simple retrieval. They might be:
-- Resolving ambiguity based on context
-- Composing information from multiple sources
-- Applying learned heuristics or reasoning patterns
-
-### Q: How is this related to "iterative inference"?
-
-**A**: One interpretation of transformers is that each layer performs a step of iterative inference, refining the model's "belief" about what comes next. The logit lens makes this visible. You can literally watch the probability distribution sharpen across layers.
 
 ## Further Reading
 
