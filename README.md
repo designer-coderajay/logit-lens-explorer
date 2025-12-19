@@ -51,6 +51,9 @@ Layer 11     |  Paris: 0.412 |  France: 0.198 | ...
 
 ```bash
 streamlit run app.py
+
+![Logit Lens Explorer Demo](demo.png)
+
 ```
 
 Features:
@@ -117,6 +120,14 @@ python logit_lens.py
 # Run interactive app
 streamlit run app.py
 ```
+
+## Tests
+
+```bash
+python -m pytest test_logit_lens.py -v
+```
+
+10 tests covering shape validation, mathematical correctness, and LayerNorm importance.
 
 ## Further Reading
 
