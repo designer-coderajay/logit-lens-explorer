@@ -1,13 +1,4 @@
----
-title: Logit Lens Explorer
-emoji: 🔍
-colorFrom: blue
-colorTo: purple
-sdk: streamlit
-sdk_version: "1.32.0"
-app_file: app.py
-pinned: false
----
+
 # Logit Lens Explorer
 
 A mechanistic interpretability tool that reveals what GPT-2 is "thinking" at each layer.
